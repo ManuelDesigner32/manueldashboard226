@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard Manuel - Campaña 2026</title>
+<style>
+  :root{
+    --page-bg:#00477e;
+    --bg:#00477e;
+    --panel:#ffffff;
+    --ink:#12222f;
+    --ink-soft:#5c6d78;
+    --line:#d7dee3;
+    --accent:#00477e;
+    --accent-ink:#ffffff;
+    --accent-soft:#e2ebf2;
+    --brand-red:#ef0010;
+    --brand-red-ink:#ffffff;
+    --danger:#ef0010;
+    --on-page:#ffffff;
+    --on-page-soft:#bcd2e3;
+    --input-bg:#eef3f7;
+    --shadow:0 2px 10px rgba(0,20,40,0.18);
+    box-sizing:border-box;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --page-bg:#00325b;
+      --bg:#00325b;
+      --panel:#13212e;
+      --ink:#edf2f5;
+      --ink-soft:#9db0bb;
+      --line:#24384a;
+      --accent:#4f9bd6;
+      --accent-ink:#05141f;
+      --accent-soft:#1a3247;
+      --brand-red:#ff4d59;
+      --brand-red-ink:#1a0304;
+      --danger:#ff4d59;
+      --on-page:#ffffff;
+      --on-page-soft:#a9c4da;
+      --input-bg:#0f2233;
+      --shadow:0 2px 10px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    --page-bg:#00325b;
+    --bg:#00325b;
+    --panel:#13212e;
+    --ink:#edf2f5;
+    --ink-soft:#9db0bb;
+    --line:#24384a;
+    --accent:#4f9bd6;
+    --accent-ink:#05141f;
+    --accent-soft:#1a3247;
+    --brand-red:#ff4d59;
+    --brand-red-ink:#1a0304;
+    --danger:#ff4d59;
+    --on-page:#ffffff;
+    --on-page-soft:#a9c4da;
+    --input-bg:#0f2233;
+    --shadow:0 1px 2px rgba(0,0,0,0.4);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100%;
+    scroll-padding-top:env(safe-area-inset-top,0px);
+  }
+  .ribbon{
+    background:var(--brand-red);
+    height:6px;
+    width:100%;
+  }
+  .wrap{
+    max-width:920px;
+    margin:0 auto;
+    padding:28px 18px 60px;
+  }
+  header{
+    margin-bottom:22px;
+  }
+  header h1{
+    font-size:1.6rem;
+    margin:0 0 4px;
+    letter-spacing:-0.01em;
+    color:var(--on-page);
+  }
+  header p{
+    margin:0;
+    color:var(--on-page-soft);
+    font-size:0.92rem;
+    max-width:60ch;
+  }
+  header .tag-year{
+    display:inline-block;
+    background:var(--brand-red);
+    color:var(--brand-red-ink);
+    font-size:0.72rem;
+    font-weight:700;
+    padding:3px 9px;
+    border-radius:5px;
+    margin-bottom:10px;
+    letter-spacing:0.02em;
+  }
+  .step{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:18px 18px 20px;
+    margin-bottom:16px;
+    box-shadow:var(--shadow);
+  }
+  .step h2{
+    font-size:0.98rem;
+    margin:0 0 12px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .step h2 .num{
+    width:22px;height:22px;
+    border-radius:50%;
+    background:var(--accent);
+    color:var(--accent-ink);
+    display:inline-flex;
+    align-items:center;justify-content:center;
+    font-size:0.75rem;
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+  }
+  .chip{
+    appearance:none;
+    border:2px solid var(--accent);
+    background:var(--panel);
+    color:var(--accent);
+    border-radius:9px;
+    padding:11px 20px;
+    font-size:0.95rem;
+    font-weight:700;
+    cursor:pointer;
+    font-family:inherit;
+    transition:background .12s ease, color .12s ease, transform .05s ease;
+  }
+  .chip:active{transform:translateY(1px);}
+  .chip.selected{
+    background:var(--brand-red);
+    border-color:var(--brand-red);
+    color:var(--brand-red-ink);
+  }
+  .tmpl-preview-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:14px;
+  }
+  @media (max-width:520px){
+    .tmpl-preview-row{grid-template-columns:1fr;}
+  }
+  .tmpl-preview{
+    border:1.5px solid var(--line);
+    border-radius:10px;
+    padding:12px;
+    text-align:center;
+    min-height:110px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    background:var(--input-bg);
+  }
+  .tmpl-preview .label{font-size:0.78rem; font-weight:600; color:var(--ink-soft);}
+  .tmpl-preview img{max-height:70px; max-width:100%; object-fit:contain; border-radius:4px;}
+  .tmpl-preview .dims{font-size:0.72rem; color:var(--ink-soft);}
+  .tmpl-preview .spinner{
+    width:18px;height:18px;
+    border:2px solid var(--line);
+    border-top-color:var(--brand-red);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  .fields-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+    margin-top:14px;
+  }
+  @media (max-width:520px){
+    .fields-row{grid-template-columns:1fr;}
+  }
+  label.field-label{
+    font-size:0.78rem;
+    font-weight:600;
+    color:var(--ink-soft);
+    display:block;
+    margin-bottom:5px;
+  }
+  input[type="text"]{
+    width:100%;
+    padding:9px 11px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--input-bg);
+    color:var(--ink);
+    font-size:0.9rem;
+    font-family:inherit;
+  }
+  input[type="text"]:focus{outline:2px solid var(--brand-red); outline-offset:1px;}
+
+  .photo-drop{
+    border:1.5px dashed var(--line);
+    border-radius:10px;
+    padding:26px 14px;
+    text-align:center;
+    cursor:pointer;
+    position:relative;
+    transition:border-color .15s ease;
+  }
+  .photo-drop:hover, .photo-drop.drag{border-color:var(--accent); background:var(--accent-soft);}
+  .photo-drop input{position:absolute; inset:0; opacity:0; cursor:pointer;}
+  .photo-drop .label{font-weight:600; font-size:0.92rem; margin-bottom:3px;}
+  .photo-drop .hint{font-size:0.78rem; color:var(--ink-soft);}
+
+  .btn{
+    appearance:none;
+    border:none;
+    border-radius:9px;
+    padding:10px 16px;
+    font-size:0.88rem;
+    font-weight:600;
+    cursor:pointer;
+    font-family:inherit;
+    transition:filter .12s ease, transform .05s ease;
+  }
+  .btn:active{transform:translateY(1px);}
+  .btn-primary{background:var(--accent); color:var(--accent-ink);}
+  .btn-primary:hover{filter:brightness(1.06);}
+  .btn-primary:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn-red{background:var(--brand-red); color:var(--brand-red-ink);}
+  .btn-red:hover{filter:brightness(1.06);}
+  .btn-red:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn-ghost{background:transparent; color:var(--ink); border:1px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--accent);}
+  .btn-sm{padding:6px 11px; font-size:0.78rem; border-radius:7px;}
+
+  .results-head{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:14px;
+  }
+  .results-head .count{font-size:0.85rem; color:var(--ink-soft);}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+    gap:12px;
+  }
+  .card{
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--bg);
+    display:flex;
+    flex-direction:column;
+  }
+  .card .thumb-box{
+    background:repeating-conic-gradient(var(--line) 0% 25%, transparent 0% 50%) 50% / 14px 14px;
+    display:flex;align-items:center;justify-content:center;
+    min-height:110px;
+  }
+  .card img.thumb{
+    display:block;
+    width:100%;
+    height:auto;
+    max-height:220px;
+    object-fit:contain;
+  }
+  .card .meta{
+    padding:8px 9px 10px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  }
+  .card .fname{
+    font-size:0.72rem;
+    color:var(--ink-soft);
+    word-break:break-all;
+    line-height:1.3;
+  }
+  .card .tag{
+    font-size:0.68rem;
+    font-weight:700;
+    letter-spacing:0.02em;
+    color:var(--brand-red);
+    text-transform:uppercase;
+  }
+  .card.pending{opacity:0.55;}
+  .card .spinner{
+    width:18px;height:18px;
+    border:2px solid var(--line);
+    border-top-color:var(--accent);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .note{
+    font-size:0.78rem;
+    color:var(--ink-soft);
+    margin-top:10px;
+    line-height:1.5;
+  }
+  .warn{
+    background:var(--accent-soft);
+    border:1px solid var(--accent);
+    border-radius:9px;
+    padding:10px 12px;
+    font-size:0.82rem;
+    margin-bottom:14px;
+    display:none;
+  }
+  .warn.show{display:block;}
+
+  ::-webkit-scrollbar{height:8px; width:8px;}
+</style>
+</head>
+<body>
+<div class="ribbon"></div>
+<div class="wrap">
+
+  <header>
+    <span class="tag-year">Campaña 2026</span>
+    <h1>Dashboard Manuel</h1>
+    <p>Elige el nombre, sube las fotos, y cada una se ajusta a la forma correcta con su logo encima, manteniendo su resolución original.</p>
+  </header>
+
+  <div class="step">
+    <h2><span class="num">1</span> ¿De quién es la foto?</h2>
+    <div class="chip-row" id="chipRow"></div>
+    <div class="tmpl-preview-row">
+      <div class="tmpl-preview" id="previewV">
+        <div class="label">Vertical</div>
+        <div class="hint" id="hintV">—</div>
+      </div>
+      <div class="tmpl-preview" id="previewH">
+        <div class="label">Horizontal</div>
+        <div class="hint" id="hintH">—</div>
+      </div>
+    </div>
+    <p class="note" id="autoLoadNote">Elige un nombre arriba.</p>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">2</span> Fecha para el nombre de archivo</h2>
+    <div class="fields-row">
+      <div>
+        <label class="field-label" for="dateInput">Fecha</label>
+        <input type="text" id="dateInput" placeholder="21-09">
+      </div>
+    </div>
+    <p class="note">Los archivos se llamarán, por ejemplo: <strong id="exampleName">KEVIN 01 21-09.png</strong></p>
+  </div>
+
+  <div class="step">
+    <h2><span class="num">3</span> Sube tus fotos</h2>
+    <div class="photo-drop" id="photoDrop">
+      <input type="file" accept="image/*" multiple id="photosInput">
+      <div class="label">Toca o arrastra tus fotos aquí</div>
+      <div class="hint">Puedes elegir varias a la vez — se detecta sola si cada una es vertical u horizontal</div>
+    </div>
+    <div class="warn" id="tmplWarn">Elige primero un nombre arriba antes de subir fotos.</div>
+  </div>
+
+  <div class="step" id="resultsStep" style="display:none;">
+    <div class="results-head">
+      <h2 style="margin:0;"><span class="num">4</span> Resultado</h2>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span class="count" id="resultsCount"></span>
+        <button class="btn btn-red" id="downloadAllBtn">Descargar todas (PNG)</button>
+      </div>
+    </div>
+    <p class="note" id="downloadHint" style="display:none;">Tu navegador puede preguntarte si permites varias descargas — acepta para que bajen todas.</p>
+    <div class="grid" id="grid"></div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const state = {
+    tmplV: null, // {img, w, h, url}
+    tmplH: null,
+    currentKey: null,
+    results: [], // {name, url, blob, orientation, seq}
+    seq: 0
+  };
+
+  // ---- Plantillas predefinidas ----
+  // Si vData/hData tienen un data:image/png;base64,... quedan incrustadas en el archivo (siempre disponibles, sin depender de otros archivos).
+  // Si se dejan en null, la app intenta cargarlas desde estos nombres de archivo en el mismo sitio, como respaldo.
+  const TEMPLATES = {
+    guido: {
+      label: 'GUIDO',
+      vData: null,
+      hData: null,
+      vFile: 'plantilla-guido-vertical.png',
+      hFile: 'plantilla-guido-horizontal.png'
+    },
+    kevin: {
+      label: 'KEVIN',
+      vData: null,
+      hData: null,
+      vFile: 'plantilla-kevin-vertical.png',
+      hFile: 'plantilla-kevin-horizontal.png'
+    }
+  };
+
+  const chipRow = document.getElementById('chipRow');
+  const previewV = document.getElementById('previewV');
+  const previewH = document.getElementById('previewH');
+  const hintV = document.getElementById('hintV');
+  const hintH = document.getElementById('hintH');
+  const photosInput = document.getElementById('photosInput');
+  const photoDrop = document.getElementById('photoDrop');
+  const tmplWarn = document.getElementById('tmplWarn');
+  const grid = document.getElementById('grid');
+  const resultsStep = document.getElementById('resultsStep');
+  const resultsCount = document.getElementById('resultsCount');
+  const downloadAllBtn = document.getElementById('downloadAllBtn');
+  const downloadHint = document.getElementById('downloadHint');
+  const dateInput = document.getElementById('dateInput');
+  const exampleName = document.getElementById('exampleName');
+  const autoLoadNote = document.getElementById('autoLoadNote');
+
+  // default date = today, dd-mm
+  (function(){
+    const d = new Date();
+    const dd = String(d.getDate()).padStart(2,'0');
+    const mm = String(d.getMonth()+1).padStart(2,'0');
+    dateInput.value = dd + '-' + mm;
+  })();
+
+  function pad2(n){ return String(n).padStart(2,'0'); }
+
+  function currentLabel(){
+    const key = state.currentKey;
+    return key && TEMPLATES[key] ? TEMPLATES[key].label : 'FOTO';
+  }
+  function currentDate(){
+    return (dateInput.value || '').trim();
+  }
+  function updateExample(){
+    const parts = [currentLabel(), '01'];
+    if (currentDate()) parts.push(currentDate());
+    exampleName.textContent = parts.join(' ') + '.png';
+  }
+  dateInput.addEventListener('input', updateExample);
+
+  function loadImageFromSrc(src){
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve({img, w: img.naturalWidth, h: img.naturalHeight, url: src});
+      img.onerror = reject;
+      img.src = src;
+    });
+  }
+
+  function loadImageFile(file){
+    const url = URL.createObjectURL(file);
+    return loadImageFromSrc(url);
+  }
+
+  async function tryFetchImage(filename){
+    try{
+      const res = await fetch(filename, {cache:'no-store'});
+      if (!res.ok) return null;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      return await loadImageFromSrc(url);
+    }catch(err){
+      return null;
+    }
+  }
+
+  function renderPreview(box, hintEl, data){
+    if (!data){
+      box.classList.remove('loading');
+      hintEl.innerHTML = 'No disponible';
+      return;
+    }
+    hintEl.innerHTML = '';
+    const im = document.createElement('img');
+    im.src = data.url;
+    hintEl.appendChild(im);
+    const small = document.createElement('div');
+    small.className = 'dims';
+    small.textContent = data.w + ' × ' + data.h + ' px';
+    hintEl.appendChild(small);
+  }
+
+  function renderLoadingPreview(hintEl){
+    hintEl.innerHTML = '<div class="spinner"></div>';
+  }
+
+  // ---- Botones de selección (uno por plantilla predefinida) ----
+  Object.keys(TEMPLATES).forEach(key => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'chip';
+    btn.textContent = TEMPLATES[key].label;
+    btn.addEventListener('click', () => selectTemplate(key));
+    btn.dataset.key = key;
+    chipRow.appendChild(btn);
+  });
+
+  function setSelectedChip(key){
+    Array.from(chipRow.children).forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.key === key);
+    });
+  }
+
+  let loadToken = 0;
+  async function selectTemplate(key){
+    const myToken = ++loadToken;
+    state.currentKey = key;
+    setSelectedChip(key);
+    updateExample();
+
+    const entry = TEMPLATES[key];
+    renderLoadingPreview(hintV);
+    renderLoadingPreview(hintH);
+    autoLoadNote.textContent = 'Cargando plantillas de ' + entry.label + '…';
+
+    const vPromise = entry.vData ? loadImageFromSrc(entry.vData) : tryFetchImage(entry.vFile);
+    const hPromise = entry.hData ? loadImageFromSrc(entry.hData) : tryFetchImage(entry.hFile);
+    const [v, h] = await Promise.all([vPromise, hPromise]);
+    if (myToken !== loadToken) return; // el usuario ya cambió de nombre mientras cargaba
+
+    state.tmplV = v;
+    state.tmplH = h;
+    renderPreview(previewV, hintV, v);
+    renderPreview(previewH, hintH, h);
+
+    if (v && h){
+      autoLoadNote.textContent = 'Plantillas de ' + entry.label + ' listas.';
+      tmplWarn.classList.remove('show');
+    } else {
+      autoLoadNote.textContent = 'Falta subir al repositorio ' + (v ? entry.hFile : entry.vFile) + ' para completar las plantillas de ' + entry.label + '.';
+      tmplWarn.classList.add('show');
+    }
+  }
+
+  // selecciona la primera plantilla disponible al cargar la página
+  const firstKey = Object.keys(TEMPLATES)[0];
+  if (firstKey) selectTemplate(firstKey);
+
+
+  // drag styling for photo drop
+  ['dragenter','dragover'].forEach(ev => {
+    photoDrop.addEventListener(ev, (e) => { e.preventDefault(); photoDrop.classList.add('drag'); });
+  });
+  ['dragleave','drop'].forEach(ev => {
+    photoDrop.addEventListener(ev, (e) => { e.preventDefault(); photoDrop.classList.remove('drag'); });
+  });
+  photoDrop.addEventListener('drop', (e) => {
+    const files = e.dataTransfer.files;
+    if (files && files.length) handlePhotos(files);
+  });
+
+  photosInput.addEventListener('change', (e) => {
+    if (e.target.files && e.target.files.length) handlePhotos(e.target.files);
+    photosInput.value = '';
+  });
+
+  function handlePhotos(fileList){
+    if (!(state.tmplV && state.tmplH)){
+      tmplWarn.classList.add('show');
+      tmplWarn.scrollIntoView({behavior:'smooth', block:'center'});
+      return;
+    }
+    resultsStep.style.display = 'block';
+    const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+    files.forEach(processPhoto);
+  }
+
+  function makePendingCard(){
+    const card = document.createElement('div');
+    card.className = 'card pending';
+    const box = document.createElement('div');
+    box.className = 'thumb-box';
+    box.style.minHeight = '110px';
+    const sp = document.createElement('div');
+    sp.className = 'spinner';
+    box.appendChild(sp);
+    card.appendChild(box);
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    meta.innerHTML = '<div class="fname">Procesando…</div>';
+    card.appendChild(meta);
+    grid.appendChild(card);
+    return card;
+  }
+
+  async function processPhoto(file){
+    const card = makePendingCard();
+    try{
+      const photo = await loadImageFile(file);
+      const isVertical = photo.h >= photo.w;
+      const tmpl = isVertical ? state.tmplV : state.tmplH;
+      const targetRatio = tmpl.w / tmpl.h; // width/height
+
+      // center-crop the photo (at native resolution) to match the template's aspect ratio
+      let srcW = photo.w, srcH = photo.h;
+      let cropW = srcW, cropH = srcH;
+      const photoRatio = srcW / srcH;
+      if (photoRatio > targetRatio){
+        // photo too wide -> crop width
+        cropW = Math.round(srcH * targetRatio);
+        cropH = srcH;
+      } else {
+        // photo too tall -> crop height
+        cropW = srcW;
+        cropH = Math.round(srcW / targetRatio);
+      }
+      const sx = Math.round((srcW - cropW) / 2);
+      const sy = Math.round((srcH - cropH) / 2);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = cropW;
+      canvas.height = cropH;
+      const ctx = canvas.getContext('2d');
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      // draw cropped photo at native resolution, no scaling
+      ctx.drawImage(photo.img, sx, sy, cropW, cropH, 0, 0, cropW, cropH);
+      // draw the logo template scaled to fill the canvas
+      ctx.drawImage(tmpl.img, 0, 0, cropW, cropH);
+
+      const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+      const url = URL.createObjectURL(blob);
+
+      state.seq += 1;
+      const seqStr = pad2(state.seq);
+      const parts = [currentLabel(), seqStr];
+      if (currentDate()) parts.push(currentDate());
+      const name = parts.join(' ') + '.png';
+
+      const result = { name, url, blob, orientation: isVertical ? 'Vertical' : 'Horizontal', seq: state.seq, w: cropW, h: cropH };
+      state.results.push(result);
+      renderCard(card, result);
+      updateResultsHead();
+    } catch(err){
+      console.error(err);
+      card.querySelector('.meta').innerHTML = '<div class="fname" style="color:var(--danger)">No se pudo procesar esta foto.</div>';
+      card.classList.remove('pending');
+    }
+  }
+
+  function renderCard(card, result){
+    card.classList.remove('pending');
+    card.innerHTML = '';
+    const box = document.createElement('div');
+    box.className = 'thumb-box';
+    const img = document.createElement('img');
+    img.className = 'thumb';
+    img.src = result.url;
+    box.appendChild(img);
+    card.appendChild(box);
+
+    const meta = document.createElement('div');
+    meta.className = 'meta';
+    const tag = document.createElement('div');
+    tag.className = 'tag';
+    tag.textContent = result.orientation + ' · ' + result.w + '×' + result.h;
+    meta.appendChild(tag);
+    const fname = document.createElement('div');
+    fname.className = 'fname';
+    fname.textContent = result.name;
+    meta.appendChild(fname);
+    const dl = document.createElement('button');
+    dl.className = 'btn btn-ghost btn-sm';
+    dl.textContent = 'Descargar';
+    dl.addEventListener('click', () => downloadOne(result));
+    meta.appendChild(dl);
+    card.appendChild(meta);
+  }
+
+  function updateResultsHead(){
+    resultsCount.textContent = state.results.length + (state.results.length === 1 ? ' foto lista' : ' fotos listas');
+  }
+
+  function downloadOne(result){
+    const a = document.createElement('a');
+    a.href = result.url;
+    a.download = result.name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  downloadAllBtn.addEventListener('click', () => {
+    if (!state.results.length) return;
+    downloadHint.style.display = state.results.length > 1 ? 'block' : 'none';
+    let i = 0;
+    function next(){
+      if (i >= state.results.length) return;
+      downloadOne(state.results[i]);
+      i += 1;
+      setTimeout(next, 400);
+    }
+    next();
+  });
+})();
+</script>
+</body>
+</html>
